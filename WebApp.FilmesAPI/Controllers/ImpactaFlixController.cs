@@ -13,8 +13,9 @@ namespace WebApp.FilmesAPI.Controllers
         //Vamos consumir o WebAPI Filmes, que permite exibir uma lista de Filmes
         public ActionResult Index()
         {
-            //Criar uma lista 
-            IEnumerable<FilmeMOD> filmes = null;
+            ////Criar uma lista 
+            //IEnumerable<FilmeMOD> filmes = null;
+            FilmeMOD filme = null;
 
             //Vamos criar um using para criar o nosso objeto HttpClient:
             //Objeto que permite a navegação, usar o protocolo Http, fazer teste de páginas, etc...
@@ -35,21 +36,24 @@ namespace WebApp.FilmesAPI.Controllers
                 //Verificamos se o código retornou com sucesso
                 if (result.IsSuccessStatusCode)
                 {
-                    var resultadoGET = result.Content.ReadAsAsync<IList<FilmeMOD>>();
-                    resultadoGET.Wait();
+                    //Receber o retorno do JSON de filmes que é convertido para a classe FilmeMOD automaticamente pelo .net
+                    filme = result.Content.ReadAsAsync<FilmeMOD>().Result;
 
-                    filmes = resultadoGET.Result;
+                    //SE O JSON RETORNASSE UM ARRAY EU PRECISARIA RECEBER COM UM ARRAY
+                    //var resultadoGET = result.Content.ReadAsAsync<IList<FilmeMOD>>();
+                    //resultadoGET.Wait();
+                    //filmes = resultadoGET.Result;
                 }
 
                 else
                 {
                     //se não tiver sucesso devolver um model state com erro tratado - mensagem personalizada
-                    filmes = Enumerable.Empty<FilmeMOD>();
+                    filme = new FilmeMOD();
                     ModelState.AddModelError(string.Empty, "Erro ao tentar consultar dados no servidor de filmes");
                 }
 
                 //Devolver o resultado da consulta para a VIEW
-                return View(filmes);
+                return View(filme);
             }
         }
     }
